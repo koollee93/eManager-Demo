@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>Manager</title>
+    <meta charset="utf-8"/>
+    <link type="text/css" href="css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <p>Please fill in this form to add an employeeId.</p>
+    <hr>
+
+    <label for="name"><b>Name</b></label>
+    <input id="name" type="text" placeholder="Enter Employee Name" name="title" maxlength="255" required>
+
+    <div class="clearfix">
+        <button id="btn" type="submit" class="signup" onclick="signUp()">Sign Up</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById("btn").addEventListener("click", function(event) {
+        console.log("Sign Up function calling...");
+        signUp();
+    });
+
+    function signUp() {
+        var name = document.getElementById("name").value;
+
+        console.log("Inputs fetched...");
+
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8080/manager/addEmployee";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.withCredentials = true;
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var json = JSON.parse(xhr.responseText);
+                console.log(json.email + ", " + json.password);
+            }
+        };
+
+        var data = JSON.stringify({"title": name});
+        console.log("JSON Prepared")
+
+        xhr.send(data);
+        console.log("Data sent.")
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+</script>
+
+</body>
+</html>

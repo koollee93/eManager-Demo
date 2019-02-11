@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:http="http://www.springframework.org/schema/util"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc
+                    http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+                    http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                    http://www.springframework.org/schema/context
+                    http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util.xsd
+                    http://www.springframework.org/schema/security
+                    http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <context:component-scan base-package="net.manager.mvc.controller"/>
+
+    <mvc:annotation-driven/>
+
+    <mvc:default-servlet-handler/>
+    <mvc:resources location="/" mapping="**/*.js">
+        <mvc:cache-control cache-private="true" max-age="2592000"/>
+    </mvc:resources>
+
+    <security:http use-expressions="true" auto-config="true">
+        <security:intercept-url pattern="/login*" access="isAnonymous()" />
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+        <security:csrf disabled="true"/>
+        <security:form-login
+                    default-target-url="/Calendar/index.html"
+                    authentication-failure-url="/login.html?error=true" />
+        <security:logout/>
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="admin" password="admin" authorities="ROLE_ADMIN" />
+            </security:user-service>
+            <security:password-encoder ref="passwordEncoder" />
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id ="passwordEncoder"
+          class = "org.springframework.security.crypto.password.NoOpPasswordEncoder"
+          factory-method = "getInstance" />
+</beans>
